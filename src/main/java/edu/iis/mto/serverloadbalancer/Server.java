@@ -4,3 +4,4 @@ public class Server {
 
     public double currentLoadPercentage;
 }
+
