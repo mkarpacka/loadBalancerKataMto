@@ -4,6 +4,7 @@ public class Server {
 
     public double currentLoadPercentage;
     public int capacity;
+    private static final double MAXIMUM_LOAD = 100.0d;
 
     public Server(int capacity) {
         super();
@@ -12,6 +13,11 @@ public class Server {
 
     public boolean contains(Vm theVm) {
         return true;
+    }
+
+    public void addVm(Vm vm) {
+
+        currentLoadPercentage = (double) vm.size / (double) capacity * MAXIMUM_LOAD;
     }
 }
 
