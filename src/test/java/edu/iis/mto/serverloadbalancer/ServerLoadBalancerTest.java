@@ -8,56 +8,63 @@ import static org.hamcrest.Matchers.equalTo;
 import org.junit.Test;
 
 public class ServerLoadBalancerTest {
-	@Test
-	public void itCompiles() {
-		assertThat(true, equalTo(true));
-	}
 
-	@Test
-	public void balancingAServer_noVms_serverStaysEmpty() {
-		Server theServer = a(server().withCapacity(1));
+    @Test public void itCompiles() {
+        assertThat(true, equalTo(true));
+    }
 
-		balance(aListOfServersWith(theServer), anEmptyListOfVms());
+    @Test public void balancingAServer_noVms_serverStaysEmpty() {
+        Server theServer = a(server().withCapacity(1));
 
-		assertThat(theServer, hasLoadPercentageOf(0.0d));
-	}
+        balance(aListOfServersWith(theServer), anEmptyListOfVms());
 
-	@Test
-	public void balancingOneServerWithOneSlotCapacity_andOneSlotVm_fillsTheServerWithTheVm(){
-		Server theServer = a(server().withCapacity(1));
-		Vm theVm = a(vm().ofSize(1));
-		balance(aListOfServersWith(theServer), aListOfVmsWith(theVm));
+        assertThat(theServer, hasLoadPercentageOf(0.0d));
+    }
 
-		assertThat(theServer, hasLoadPercentageOf(100.0d));
-		assertThat("the server should contain vm", theServer.contains(theVm));
-	}
-	
-	private Vm[] aListOfVmsWith(Vm vm) {
-		return new Vm[]{vm};
-	}
+    @Test public void balancingOneServerWithOneSlotCapacity_andOneSlotVm_fillsTheServerWithTheVm() {
+        Server theServer = a(server().withCapacity(1));
+        Vm theVm = a(vm().ofSize(1));
+        balance(aListOfServersWith(theServer), aListOfVmsWith(theVm));
 
-	private Vm a(VmBuilder builder) {
-		return builder.build();
-	}
+        assertThat(theServer, hasLoadPercentageOf(100.0d));
+        assertThat("the server should contain vm", theServer.contains(theVm));
+    }
 
-	private VmBuilder vm() {
-		return new VmBuilder();
-	}
+    @Test public void balancingOneServerWithTenSlotsCapacity_andOneSlotVm_fillsTheServerWithTenPercent() {
+        Server theServer = a(server().withCapacity(10));
+        Vm theVm = a(vm().ofSize(1));
+        balance(aListOfServersWith(theServer), aListOfVmsWith(theVm));
 
-	private void balance(Server[] servers, Vm[] vms) {
-		new ServerLoadBalancer().balance(servers, vms);
-	}
+        assertThat(theServer, hasLoadPercentageOf(10.0d));
+        assertThat("the server should contain vm", theServer.contains(theVm));
+    }
 
-	private Vm[] anEmptyListOfVms() {
-		return new Vm[0];
-	}
+    private Vm[] aListOfVmsWith(Vm vm) {
+        return new Vm[] {vm};
+    }
 
-	private Server[] aListOfServersWith(Server server) {
-		return new Server[] { server };
-	}
+    private Vm a(VmBuilder builder) {
+        return builder.build();
+    }
 
-	private Server a(ServerBuilder builder) {
-		return builder.build();
-	}
+    private VmBuilder vm() {
+        return new VmBuilder();
+    }
+
+    private void balance(Server[] servers, Vm[] vms) {
+        new ServerLoadBalancer().balance(servers, vms);
+    }
+
+    private Vm[] anEmptyListOfVms() {
+        return new Vm[0];
+    }
+
+    private Server[] aListOfServersWith(Server server) {
+        return new Server[] {server};
+    }
+
+    private Server a(ServerBuilder builder) {
+        return builder.build();
+    }
 
 }
