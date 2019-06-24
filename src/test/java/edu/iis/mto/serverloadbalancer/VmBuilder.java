@@ -4,6 +4,10 @@ public class VmBuilder {
 
 	private int size;
 
+	public static VmBuilder vm() {
+		return new VmBuilder();
+	}
+
 	public VmBuilder ofSize(int size) {
 		this.size = size;
 		return this;
